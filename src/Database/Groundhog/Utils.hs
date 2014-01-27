@@ -76,7 +76,7 @@ integralToKey proxy =
 
 -- | SafeCopy PrimitivePersistField wrapper. Anything you stuff in
 -- here will be persisted in database as a SafeCopy blob.
-newtype SC a = SC { getSC :: a } deriving (Eq,Show,Read,Ord,Generic,Typeable)
+newtype SC a = SC { getSC :: a } deriving (Eq,Show,Read,Ord,Generic,Typeable,NeverNull)
 makeIso ''SC
 makeWrapped ''SC
 
