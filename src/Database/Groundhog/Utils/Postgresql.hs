@@ -1,6 +1,12 @@
 {-# LANGUAGE FlexibleContexts          #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
-module Database.Groundhog.Utils.Postgresql where
+module Database.Groundhog.Utils.Postgresql
+    ( module Database.Groundhog.Utils.Postgresql
+    , U.getKey
+    , U.mkKey
+    , U.SC (..)
+    , U.Sh (..)
+    ) where
 
 -------------------------------------------------------------------------------
 import           Database.Groundhog.Core
