@@ -15,11 +15,11 @@ library
     Database.Groundhog.Utils.Postgresql
   build-depends:       
       base >=4.6 && <4.7
-    , lens >=3.10 && <3.11
+    , lens >=3.9 && <3.11
     , groundhog >=0.4 && <0.5
     , groundhog-postgresql >=0.4 && <0.5
     , groundhog-th >=0.4 && <0.5
-    , cereal >= 0.4 && < 0.5
+    , cereal >= 0.3 && < 0.5
     , safecopy >= 0.8 && < 0.9
     , data-default >= 0.5 && < 0.6
     , bytestring >= 0.10 && < 0.11
