@@ -23,6 +23,33 @@ import           GHC.Generics
 -------------------------------------------------------------------------------
 
 
+------------------------------------------------------------------------------
+-- | Data type holding a key and its associated value.  This is used for
+-- convenience functions like selectEntity that abstract the common pattern of
+-- getting a row and its auto-incremented key.
+data Entity k v = Entity
+    { entityKey :: k
+    , entityVal :: v
+    }
+
+
+-------------------------------------------------------------------------------
+-- | Convenience wrapper aronud groundhog's 'select' function that also
+-- returns keys with each result row.
+selectEntity :: (PersistBackend m,
+                 Projection constr (PhantomDb m) (RestrictionHolder v c) b,
+                 HasSelectOptions opts (PhantomDb m) (RestrictionHolder v c),
+                 EntityConstr v c)
+             => constr
+             -- ^ The constructor type for the object being queried
+             -> opts
+             -- ^ Same as the opts argument to groundhog's select funciton
+             -> m [Entity (AutoKey v) b]
+selectEntity constructor cond = do
+    res <- project (AutoKeyField, constructor) cond
+    return $ map (uncurry Entity) res
+
+
 -- | Pull the Int out of a db AutoKey.
 getKey :: (SinglePersistField a, PersistBackend m) => a -> m Int
 getKey k = toSinglePersistValue k >>= fromSinglePersistValue
