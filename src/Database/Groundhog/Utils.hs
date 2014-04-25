@@ -18,7 +18,7 @@ import           Data.ByteString.Char8      (ByteString)
 import           Data.Default
 import           Data.SafeCopy
 import           Data.Serialize
-import           Data.Typeable hiding (Proxy)
+import           Data.Typeable
 import           Database.Groundhog         as GH
 import           Database.Groundhog.Core    as GH
 import           Database.Groundhog.Generic as GH
@@ -68,7 +68,7 @@ mkKey k = toSinglePersistValue k >>= fromSinglePersistValue
 -------------------------------------------------------------------------------
 keyToInt
     :: (DbDescriptor db, PrimitivePersistField (Key a b))
-    => Proxy db
+    => proxy db
     -> Key a b
     -> Int
 keyToInt p = keyToIntegral p
@@ -78,7 +78,7 @@ keyToInt p = keyToIntegral p
 -- | Convert 'Key' to any integral type.
 keyToIntegral
     :: (DbDescriptor db, PrimitivePersistField i, PrimitivePersistField (Key a b))
-    => Proxy db
+    => proxy db
     -> Key a b
     -> i
 keyToIntegral proxy =
@@ -89,7 +89,7 @@ keyToIntegral proxy =
 -- | Type specialized input for type inference convenience.
 intToKey
     :: (DbDescriptor db, PrimitivePersistField (Key a b))
-    => Proxy db
+    => proxy db
     -> Int
     -> Key a b
 intToKey p = integralToKey p
@@ -99,7 +99,7 @@ intToKey p = integralToKey p
 -- | Convert any integral type to 'Key'
 integralToKey
     :: (DbDescriptor db, PrimitivePersistField i, PrimitivePersistField (Key a b))
-    => Proxy db
+    => proxy db
     -> i
     -> Key a b
 integralToKey proxy =
