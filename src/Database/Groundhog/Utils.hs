@@ -8,6 +8,7 @@
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE UndecidableInstances       #-}
+{-# LANGUAGE ConstraintKinds            #-}
 
 module Database.Groundhog.Utils where
 
@@ -17,7 +18,7 @@ import           Data.ByteString.Char8      (ByteString)
 import           Data.Default
 import           Data.SafeCopy
 import           Data.Serialize
-import           Data.Typeable
+import           Data.Typeable hiding (Proxy)
 import           Database.Groundhog         as GH
 import           Database.Groundhog.Core    as GH
 import           Database.Groundhog.Generic as GH
@@ -39,7 +40,9 @@ data Entity k v = Entity
 -- | Convenience wrapper aronud groundhog's 'select' function that also
 -- returns keys with each result row.
 selectEntity :: (PersistBackend m,
-                 Projection constr (PhantomDb m) (RestrictionHolder v c) b,
+                 Projection constr b,
+                 ProjectionDb constr (PhantomDb m),
+                 ProjectionRestriction constr (RestrictionHolder v c),
                  HasSelectOptions opts (PhantomDb m) (RestrictionHolder v c),
                  EntityConstr v c)
              => constr
