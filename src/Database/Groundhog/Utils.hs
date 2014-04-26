@@ -8,6 +8,7 @@
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE UndecidableInstances       #-}
+{-# LANGUAGE ConstraintKinds            #-}
 
 module Database.Groundhog.Utils where
 
@@ -39,7 +40,9 @@ data Entity k v = Entity
 -- | Convenience wrapper aronud groundhog's 'select' function that also
 -- returns keys with each result row.
 selectEntity :: (PersistBackend m,
-                 Projection constr (PhantomDb m) (RestrictionHolder v c) b,
+                 Projection constr b,
+                 ProjectionDb constr (PhantomDb m),
+                 ProjectionRestriction constr (RestrictionHolder v c),
                  HasSelectOptions opts (PhantomDb m) (RestrictionHolder v c),
                  EntityConstr v c)
              => constr
@@ -65,7 +68,7 @@ mkKey k = toSinglePersistValue k >>= fromSinglePersistValue
 -------------------------------------------------------------------------------
 keyToInt
     :: (DbDescriptor db, PrimitivePersistField (Key a b))
-    => Proxy db
+    => proxy db
     -> Key a b
     -> Int
 keyToInt p = keyToIntegral p
@@ -75,7 +78,7 @@ keyToInt p = keyToIntegral p
 -- | Convert 'Key' to any integral type.
 keyToIntegral
     :: (DbDescriptor db, PrimitivePersistField i, PrimitivePersistField (Key a b))
-    => Proxy db
+    => proxy db
     -> Key a b
     -> i
 keyToIntegral proxy =
@@ -86,7 +89,7 @@ keyToIntegral proxy =
 -- | Type specialized input for type inference convenience.
 intToKey
     :: (DbDescriptor db, PrimitivePersistField (Key a b))
-    => Proxy db
+    => proxy db
     -> Int
     -> Key a b
 intToKey p = integralToKey p
@@ -96,7 +99,7 @@ intToKey p = integralToKey p
 -- | Convert any integral type to 'Key'
 integralToKey
     :: (DbDescriptor db, PrimitivePersistField i, PrimitivePersistField (Key a b))
-    => Proxy db
+    => proxy db
     -> i
     -> Key a b
 integralToKey proxy =
