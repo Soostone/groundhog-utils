@@ -1,3 +1,4 @@
+{-# LANGUAGE ConstraintKinds            #-}
 {-# LANGUAGE DeriveDataTypeable         #-}
 {-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE FlexibleContexts           #-}
@@ -8,7 +9,6 @@
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE UndecidableInstances       #-}
-{-# LANGUAGE ConstraintKinds            #-}
 
 module Database.Groundhog.Utils where
 
@@ -125,8 +125,8 @@ instance SafeCopy a => PrimitivePersistField (SC a) where
         runGet safeGet (fromPrimitivePersistValue p x)
 
 
-
--- | Show PrimitivePersistField wrapper.
+-- | Show PrimitivePersistField wrapper. Wrap your data into this and
+-- it will be marshalled to groundhog via its read/show instances.
 newtype Sh a = Sh { getShow :: a }
     deriving (Eq,Show,Read,Ord,Generic,Typeable,Default,NeverNull)
 makeIso ''Sh
