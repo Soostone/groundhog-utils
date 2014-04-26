@@ -1,5 +1,5 @@
 name:                groundhog-utils
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Some utilities that are often useful when using Groundhog
 license:             BSD3
 license-file:        LICENSE
