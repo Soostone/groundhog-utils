@@ -116,7 +116,7 @@ instance SafeCopy a => PersistField (SC a) where
     persistName _ = "SC" ++ delim : delim : persistName (undefined :: ByteString)
     toPersistValues = primToPersistValue
     fromPersistValues = primFromPersistValue
-    dbType _ = DbTypePrimitive DbBlob False Nothing Nothing
+    dbType _ _ = DbTypePrimitive DbBlob False Nothing Nothing
 
 instance SafeCopy a => PrimitivePersistField (SC a) where
     toPrimitivePersistValue p (SC a) = toPrimitivePersistValue p $ runPut $ safePut a
@@ -136,7 +136,7 @@ instance (Show a, Read a) => PersistField (Sh a) where
     persistName _ = "Sh" ++ delim : delim : persistName (undefined :: ByteString)
     toPersistValues = primToPersistValue
     fromPersistValues = primFromPersistValue
-    dbType _ = DbTypePrimitive DbString False Nothing Nothing
+    dbType _ _ = DbTypePrimitive DbString False Nothing Nothing
 
 instance (Show a, Read a) => PrimitivePersistField (Sh a) where
     toPrimitivePersistValue p (Sh a) = toPrimitivePersistValue p $ show a
