@@ -15,13 +15,13 @@ library
     Database.Groundhog.Utils.Postgresql
   build-depends:       
       base                 >= 4.6  && < 4.8
-    , lens                 >= 3.9  && < 4.2
+    , bytestring           >= 0.10 && < 0.11
+    , cereal               >= 0.3  && < 0.5
+    , data-default         >= 0.5  && < 0.6
     , groundhog            >= 0.6  && < 0.7
     , groundhog-postgresql >= 0.6  && < 0.7
     , groundhog-th         >= 0.6  && < 0.7
-    , cereal               >= 0.3  && < 0.5
+    , lens                 >= 3.9  && < 4.4
     , safecopy             >= 0.8  && < 0.9
-    , data-default         >= 0.5  && < 0.6
-    , bytestring           >= 0.10 && < 0.11
   hs-source-dirs:      src
   default-language:    Haskell2010
