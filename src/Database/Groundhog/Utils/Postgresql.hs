@@ -20,6 +20,7 @@ module Database.Groundhog.Utils.Postgresql
 -------------------------------------------------------------------------------
 import           Control.Monad
 import qualified Data.ByteString.Char8          as B
+import           Data.Proxy
 import           Database.Groundhog.Core
 import           Database.Groundhog.Generic
 import           Database.Groundhog.Generic.Sql
