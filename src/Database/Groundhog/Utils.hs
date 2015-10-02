@@ -34,7 +34,7 @@ import           GHC.Generics
 data Entity k v = Entity
     { entityKey :: k
     , entityVal :: v
-    }
+    } deriving (Show, Eq, Ord)
 
 
 -------------------------------------------------------------------------------
