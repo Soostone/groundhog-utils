@@ -20,7 +20,6 @@ module Database.Groundhog.Utils.Postgresql
 -------------------------------------------------------------------------------
 import           Control.Monad
 import qualified Data.ByteString.Char8          as B
-import           Data.Proxy
 import           Database.Groundhog.Core
 import           Database.Groundhog.Generic
 import           Database.Groundhog.Generic.Sql
@@ -30,7 +29,7 @@ import qualified Database.Groundhog.Utils       as U
 -------------------------------------------------------------------------------
 
 
-pg :: Proxy Postgresql
+pg :: proxy Postgresql
 pg = undefined
 
 keyToInt :: PrimitivePersistField (Key a b) => Key a b -> Int
