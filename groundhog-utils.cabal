@@ -13,15 +13,15 @@ library
   exposed-modules:
     Database.Groundhog.Utils
     Database.Groundhog.Utils.Postgresql
-  build-depends:
-      base                 >= 4.6  && < 4.8
+  build-depends:       
+      base                 >= 4.6  && < 4.9
     , bytestring           >= 0.10 && < 0.11
     , cereal               >= 0.3  && < 0.5
     , data-default         >= 0.5  && < 0.6
-    , groundhog            >= 0.6  && < 0.8
-    , groundhog-postgresql >= 0.6  && < 0.8
-    , groundhog-th         >= 0.6  && < 0.8
-    , lens                 >= 3.9  && < 4.10
+    , groundhog            >= 0.6  && < 0.7
+    , groundhog-postgresql >= 0.6  && < 0.7
+    , groundhog-th         >= 0.6  && < 0.7
+    , lens                 >= 3.9  && < 4.14
     , safecopy             >= 0.8  && < 0.9
     , tagged
   hs-source-dirs:      src
