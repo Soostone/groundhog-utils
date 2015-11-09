@@ -109,9 +109,11 @@ integralToKey proxy =
 
 -- | SafeCopy PrimitivePersistField wrapper. Anything you stuff in
 -- here will be persisted in database as a SafeCopy blob.
-newtype SC a = SC { _getSC :: a } deriving (Eq,Show,Read,Ord,Generic,Typeable,NeverNull)
+newtype SC a = SC { _getSC :: a } deriving (Eq,Show,Read,Ord,Generic,Typeable)
 makeLenses ''SC
 makeWrapped ''SC
+
+instance NeverNull (SC a)
 
 instance SafeCopy a => PersistField (SC a) where
     persistName _ = "SC" ++ delim : delim : persistName (undefined :: ByteString)
@@ -129,9 +131,11 @@ instance SafeCopy a => PrimitivePersistField (SC a) where
 -- | Show PrimitivePersistField wrapper. Wrap your data into this and
 -- it will be marshalled to groundhog via its read/show instances.
 newtype Sh a = Sh { _getSh :: a }
-    deriving (Eq,Show,Read,Ord,Generic,Typeable,Default,NeverNull)
+    deriving (Eq,Show,Read,Ord,Generic,Typeable,Default)
 makeLenses ''Sh
 makeWrapped ''Sh
+
+instance NeverNull (Sh a)
 
 instance (Show a, Read a) => PersistField (Sh a) where
     persistName _ = "Sh" ++ delim : delim : persistName (undefined :: ByteString)
