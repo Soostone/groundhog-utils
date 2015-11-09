@@ -29,7 +29,7 @@ import qualified Database.Groundhog.Utils       as U
 -------------------------------------------------------------------------------
 
 
-pg :: Proxy Postgresql
+pg :: proxy Postgresql
 pg = undefined
 
 keyToInt :: PrimitivePersistField (Key a b) => Key a b -> Int
