@@ -14,6 +14,7 @@
 module Database.Groundhog.Utils where
 
 -------------------------------------------------------------------------------
+import           Data.Aeson
 import           Control.Lens
 import           Data.ByteString.Char8      (ByteString)
 import           Data.Default
@@ -109,7 +110,8 @@ integralToKey proxy =
 
 -- | SafeCopy PrimitivePersistField wrapper. Anything you stuff in
 -- here will be persisted in database as a SafeCopy blob.
-newtype SC a = SC { _getSC :: a } deriving (Eq,Show,Read,Ord,Generic,Typeable)
+newtype SC a = SC { _getSC :: a }
+  deriving (Eq,Show,Read,Ord,Generic,Typeable,NeverNull,ToJSON,FromJSON)
 makeLenses ''SC
 makeWrapped ''SC
 
@@ -131,7 +133,7 @@ instance SafeCopy a => PrimitivePersistField (SC a) where
 -- | Show PrimitivePersistField wrapper. Wrap your data into this and
 -- it will be marshalled to groundhog via its read/show instances.
 newtype Sh a = Sh { _getSh :: a }
-    deriving (Eq,Show,Read,Ord,Generic,Typeable,Default)
+  deriving (Eq,Show,Read,Ord,Generic,Typeable,Default,NeverNull,ToJSON,FromJSON)
 makeLenses ''Sh
 makeWrapped ''Sh
 
@@ -146,3 +148,4 @@ instance (Show a, Read a) => PersistField (Sh a) where
 instance (Show a, Read a) => PrimitivePersistField (Sh a) where
     toPrimitivePersistValue p (Sh a) = toPrimitivePersistValue p $ show a
     fromPrimitivePersistValue p x = Sh $ read (fromPrimitivePersistValue p x)
+
