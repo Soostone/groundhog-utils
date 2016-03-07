@@ -17,13 +17,13 @@ library
       aeson                >= 0.7  && < 0.12
     , base                 >= 4.6  && < 5
     , bytestring           >= 0.10 && < 0.11
-    , cereal               >= 0.3  && < 0.5
+    , cereal               >= 0.3  && < 0.6
     , data-default         >= 0.5  && < 0.6
     , groundhog            >= 0.6  && < 0.8
     , groundhog-postgresql >= 0.6  && < 0.8
     , groundhog-th         >= 0.6  && < 0.8
     , lens                 >= 3.9  && < 4.14
-    , safecopy             >= 0.8  && < 0.9
+    , safecopy             >= 0.8  && < 0.10
     , tagged
   hs-source-dirs:      src
   default-language:    Haskell2010
