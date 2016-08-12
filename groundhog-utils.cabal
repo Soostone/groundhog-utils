@@ -22,7 +22,7 @@ library
     , groundhog            >= 0.6  && < 0.8
     , groundhog-postgresql >= 0.6  && < 0.8
     , groundhog-th         >= 0.6  && < 0.8
-    , lens                 >= 3.9  && < 4.14
+    , lens                 >= 3.9  && < 4.15
     , safecopy             >= 0.8  && < 0.10
     , tagged
   hs-source-dirs:      src
