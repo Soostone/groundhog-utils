@@ -18,7 +18,7 @@ library
     , base                 >= 4.6  && < 5
     , bytestring           >= 0.10 && < 0.11
     , cereal               >= 0.3  && < 0.6
-    , data-default         >= 0.5  && < 0.6
+    , data-default         >= 0.5  && < 0.8
     , groundhog            >= 0.6  && < 0.8
     , groundhog-postgresql >= 0.6  && < 0.8
     , groundhog-th         >= 0.6  && < 0.8
