@@ -19,6 +19,9 @@ module Database.Groundhog.Utils.Postgresql
 
 -------------------------------------------------------------------------------
 import           Control.Monad
+import           Control.Monad.IO.Class
+import           Control.Monad.Trans.Control
+import           Data.Acquire                   (with)
 import qualified Data.ByteString.Char8          as B
 import           Database.Groundhog.Core
 import           Database.Groundhog.Generic
@@ -33,20 +36,20 @@ pg :: proxy Postgresql
 pg = undefined
 
 keyToInt :: PrimitivePersistField (Key a b) => Key a b -> Int
-keyToInt = U.keyToInt pg
+keyToInt = U.keyToInt
 
 keyToIntegral
     :: (PrimitivePersistField i, PrimitivePersistField (Key a b))
     => Key a b -> i
-keyToIntegral = U.keyToIntegral pg
+keyToIntegral = U.keyToIntegral
 
 integralToKey
     :: (PrimitivePersistField i, PrimitivePersistField (Key a b))
     => i -> Key a b
-integralToKey = U.integralToKey pg
+integralToKey = U.integralToKey
 
 intToKey :: PrimitivePersistField (Key a b) => Int -> Key a b
-intToKey = U.intToKey pg
+intToKey = U.intToKey
 
 
 
@@ -57,14 +60,15 @@ toEntityPersistValues' v = ($ []) `liftM` toEntityPersistValues v
 
 -------------------------------------------------------------------------------
 insertMany
-    :: (PersistEntity a, PersistBackend m, PrimitivePersistField (AutoKey a))
+    :: (PersistEntity a, PersistBackend m, PrimitivePersistField (AutoKey a), MonadIO m, MonadBaseControl IO m)
     => [a]
     -> m [AutoKey a]
 insertMany vs = do
     vs' <- (concat . map tail) `liftM` mapM toEntityPersistValues' vs
-    queryRaw False query vs' (mapAllRows converter)
+    rawValues <- streamToList =<< queryRaw False query vs' -- rowstream [persistvalue] ~ Acquire (IO (Maybe a))
+    return (converter <$> rawValues)
   where
-    converter [x] = return $ fromPrimitivePersistValue pg x
+    converter [x] = fromPrimitivePersistValue x
 
     query = B.unpack . fromUtf8 $
       "INSERT INTO " <> dbName <> " (" <> fieldNames <> ")" <>

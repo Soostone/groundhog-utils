@@ -41,17 +41,18 @@ data Entity k v = Entity
 -------------------------------------------------------------------------------
 -- | Convenience wrapper aronud groundhog's 'select' function that also
 -- returns keys with each result row.
-selectEntity :: (PersistBackend m,
-                 Projection constr b,
-                 ProjectionDb constr (PhantomDb m),
-                 ProjectionRestriction constr (RestrictionHolder v c),
-                 HasSelectOptions opts (PhantomDb m) (RestrictionHolder v c),
-                 EntityConstr v c)
-             => constr
-             -- ^ The constructor type for the object being queried
-             -> opts
-             -- ^ Same as the opts argument to groundhog's select funciton
-             -> m [Entity (AutoKey v) b]
+-- selectEntity :: (PersistBackend m,
+--                  Projection constr b,
+--                  ProjectionDb constr (PhantomDb m),
+--                  ProjectionRestriction constr (RestrictionHolder v c),
+--                  HasSelectOptions opts (PhantomDb m) (RestrictionHolder v c),
+--                  EntityConstr v c)
+--              => constr
+--              -- ^ The constructor type for the object being queried
+--              -> opts
+--              -- ^ Same as the opts argument to groundhog's select funciton
+--              -> m [Entity (AutoKey v) b]
+--TODO: figure out real type
 selectEntity constructor cond = do
     res <- project (AutoKeyField, constructor) cond
     return $ map (uncurry Entity) res
@@ -69,43 +70,39 @@ mkKey k = toSinglePersistValue k >>= fromSinglePersistValue
 
 -------------------------------------------------------------------------------
 keyToInt
-    :: (DbDescriptor db, PrimitivePersistField (Key a b))
-    => proxy db
-    -> Key a b
+    :: (PrimitivePersistField (Key a b))
+    => Key a b
     -> Int
-keyToInt p = keyToIntegral p
+keyToInt = keyToIntegral
 
 
 -------------------------------------------------------------------------------
 -- | Convert 'Key' to any integral type.
 keyToIntegral
-    :: (DbDescriptor db, PrimitivePersistField i, PrimitivePersistField (Key a b))
-    => proxy db
-    -> Key a b
+    :: (PrimitivePersistField i, PrimitivePersistField (Key a b))
+    => Key a b
     -> i
-keyToIntegral proxy =
-    fromPrimitivePersistValue proxy . toPrimitivePersistValue proxy
+keyToIntegral =
+    fromPrimitivePersistValue . toPrimitivePersistValue
 
 
 -------------------------------------------------------------------------------
 -- | Type specialized input for type inference convenience.
 intToKey
-    :: (DbDescriptor db, PrimitivePersistField (Key a b))
-    => proxy db
-    -> Int
+    :: (PrimitivePersistField (Key a b))
+    => Int
     -> Key a b
-intToKey p = integralToKey p
+intToKey = integralToKey
 
 
 -------------------------------------------------------------------------------
 -- | Convert any integral type to 'Key'
 integralToKey
-    :: (DbDescriptor db, PrimitivePersistField i, PrimitivePersistField (Key a b))
-    => proxy db
-    -> i
+    :: (PrimitivePersistField i, PrimitivePersistField (Key a b))
+    => i
     -> Key a b
-integralToKey proxy =
-    fromPrimitivePersistValue proxy . toPrimitivePersistValue proxy
+integralToKey =
+    fromPrimitivePersistValue . toPrimitivePersistValue
 
 
 -- | SafeCopy PrimitivePersistField wrapper. Anything you stuff in
@@ -124,10 +121,10 @@ instance SafeCopy a => PersistField (SC a) where
     dbType _ _ = DbTypePrimitive DbBlob False Nothing Nothing
 
 instance SafeCopy a => PrimitivePersistField (SC a) where
-    toPrimitivePersistValue p (SC a) = toPrimitivePersistValue p $ runPut $ safePut a
-    fromPrimitivePersistValue p x =
+    toPrimitivePersistValue (SC a) = toPrimitivePersistValue $ runPut $ safePut a
+    fromPrimitivePersistValue x =
       either (error "SafeCopy failed in SC wrapper.") SC $
-        runGet safeGet (fromPrimitivePersistValue p x)
+        runGet safeGet (fromPrimitivePersistValue x)
 
 
 -- | Show PrimitivePersistField wrapper. Wrap your data into this and
@@ -146,6 +143,5 @@ instance (Show a, Read a) => PersistField (Sh a) where
     dbType _ _ = DbTypePrimitive DbString False Nothing Nothing
 
 instance (Show a, Read a) => PrimitivePersistField (Sh a) where
-    toPrimitivePersistValue p (Sh a) = toPrimitivePersistValue p $ show a
-    fromPrimitivePersistValue p x = Sh $ read (fromPrimitivePersistValue p x)
-
+    toPrimitivePersistValue (Sh a) = toPrimitivePersistValue $ show a
+    fromPrimitivePersistValue x = Sh $ read (fromPrimitivePersistValue x)
