@@ -14,7 +14,7 @@ library
     Database.Groundhog.Utils
     Database.Groundhog.Utils.Postgresql
   build-depends:
-      aeson                >= 0.7  && < 0.12
+      aeson                >= 0.7  && < 1.1
     , base                 >= 4.6  && < 5
     , bytestring           >= 0.10 && < 0.11
     , cereal               >= 0.3  && < 0.6
@@ -22,7 +22,7 @@ library
     , groundhog            >= 0.8  && < 0.9
     , groundhog-postgresql >= 0.8  && < 0.9
     , groundhog-th         >= 0.8  && < 0.9
-    , lens                 >= 3.9  && < 4.15
+    , lens                 >= 3.9  && < 5
     , safecopy             >= 0.8  && < 0.10
     , tagged
     , resourcet >= 1.1.0
