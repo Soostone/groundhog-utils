@@ -1,5 +1,5 @@
 name:                groundhog-utils
-version:             0.2.2
+version:             0.3.0
 synopsis:            Some utilities that are often useful when using Groundhog
 license:             BSD3
 license-file:        LICENSE
@@ -8,6 +8,10 @@ maintainer:          ozgun.ataman@soostone.com
 category:            Database
 build-type:          Simple
 cabal-version:       >=1.10
+
+extra-source-files:
+  README.md
+  changelog.md
 
 library
   exposed-modules:
