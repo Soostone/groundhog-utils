@@ -1,5 +1,9 @@
-resolver: lts-8.23
+# can't move on to lts 12 until https://github.com/lykahb/groundhog/pull/79 is merged
+resolver: lts-11.17
 packages:
   - .
-extra-deps: []
+extra-deps:
+  - groundhog-0.8.0.1
+  - groundhog-postgresql-0.8.0.3
+  - groundhog-th-0.8.0.2
 flags: {}
