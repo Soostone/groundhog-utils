@@ -7,6 +7,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses      #-}
 {-# LANGUAGE NoMonomorphismRestriction  #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE UndecidableInstances       #-}
@@ -16,6 +17,7 @@ module Database.Groundhog.Utils
   , Entity'
   -- * Querying
   , selectEntity
+  , selectProducer
   -- * Keys
   , getKey
   , mkKey
@@ -31,16 +33,22 @@ module Database.Groundhog.Utils
   ) where
 
 -------------------------------------------------------------------------------
-import           Data.Aeson
 import           Control.Lens
-import           Data.ByteString.Char8      (ByteString)
+import           Control.Monad.IO.Class
+import           Control.Monad.Loops          (whileJust_)
+import           Control.Monad.Trans
+import           Control.Monad.Trans.Resource
+import qualified Data.Acquire                 as Acquire
+import           Data.Aeson
+import           Data.ByteString.Char8        (ByteString)
+import           Data.Conduit
 import           Data.Default
 import           Data.SafeCopy
 import           Data.Serialize
 import           Data.Typeable
-import           Database.Groundhog         as GH
-import           Database.Groundhog.Core    as GH
-import           Database.Groundhog.Generic as GH
+import           Database.Groundhog           as GH
+import           Database.Groundhog.Core      as GH
+import           Database.Groundhog.Generic   as GH
 import           GHC.Generics
 -------------------------------------------------------------------------------
 
@@ -79,6 +87,46 @@ selectEntity constructor cond = do
     res <- project (AutoKeyField, constructor) cond
     return $ map (uncurry Entity) res
 
+
+-------------------------------------------------------------------------------
+-- | Takes groundhog's streaming-framework-agnostic 'selectStream' to
+-- a conduit producer.
+selectProducer
+  :: forall v c conn m ctor opts b i.
+     ( EntityConstr v c
+     , HasSelectOptions opts conn (RestrictionHolder v c)
+     , PersistBackend m
+     , Conn m ~ conn
+     --, MonadBase IO m
+     , Projection ctor b
+     , ProjectionDb ctor conn
+     , ProjectionRestriction ctor (RestrictionHolder v c)
+     --, EX.MonadThrow m
+     )
+  => ctor
+  -> opts
+  -> ConduitM i (Entity (AutoKey v) b) (ResourceT m) ()
+selectProducer ctor opts = do
+  rowStream <- fmap (fmap (fmap (uncurry Entity))) <$>
+    lift (lift (projectStream (AutoKeyField, ctor) opts))
+  rowStreamProducer rowStream
+
+
+-------------------------------------------------------------------------------
+rowStreamProducer
+    :: ( MonadIO m
+       -- , EX.MonadThrow m
+       -- , MonadBase IO m
+       )
+    => RowStream a
+    -> ConduitM i a (ResourceT m) ()
+rowStreamProducer rowStream = do
+  (releaseKey, rowIterator) <- Acquire.allocateAcquire rowStream
+  whileJust_ (liftIO rowIterator) yield
+  release releaseKey
+
+
+-------------------------------------------------------------------------------
 
 -- | Pull the Int out of a db AutoKey.
 getKey :: (SinglePersistField a, PersistBackend m) => a -> m Int
