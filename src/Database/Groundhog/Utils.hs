@@ -11,7 +11,24 @@
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE UndecidableInstances       #-}
 
-module Database.Groundhog.Utils where
+module Database.Groundhog.Utils
+  ( Entity(..)
+  , Entity'
+  -- * Querying
+  , selectEntity
+  -- * Keys
+  , getKey
+  , mkKey
+  , keyToInt
+  , keyToIntegral
+  , intToKey
+  , integralToKey
+  -- * Serialization
+  , SC(..)
+  , getSC
+  , Sh(..)
+  , getSh
+  ) where
 
 -------------------------------------------------------------------------------
 import           Data.Aeson
@@ -36,6 +53,11 @@ data Entity k v = Entity
     { entityKey :: k
     , entityVal :: v
     } deriving (Show, Eq, Ord, Generic, Typeable)
+
+
+-- | The Common case of an entity with a matching key. You almost
+-- never need a key that doesn't track the 'entityVal' type.
+type Entity' v = Entity (DefaultKey v) v
 
 
 -------------------------------------------------------------------------------
