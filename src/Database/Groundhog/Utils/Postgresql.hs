@@ -21,7 +21,6 @@ module Database.Groundhog.Utils.Postgresql
 import           Control.Monad
 import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Control
-import           Data.Acquire                   (with)
 import qualified Data.ByteString.Char8          as B
 import           Database.Groundhog.Core
 import           Database.Groundhog.Generic
@@ -55,6 +54,10 @@ intToKey = U.intToKey
 
 
 
+toEntityPersistValues'
+  :: (PersistBackend m, PersistEntity v)
+  => v
+  -> m [PersistValue]
 toEntityPersistValues' v = ($ []) `liftM` toEntityPersistValues v
 
 
@@ -69,6 +72,7 @@ insertMany vs = do
     return (converter <$> rawValues)
   where
     converter [x] = fromPrimitivePersistValue x
+    converter _   = error "Impossible, returning(id) returned cols /= 1"
 
     query = B.unpack . fromUtf8 $
       "INSERT INTO " <> dbName <> " (" <> fieldNames <> ")" <>
@@ -82,5 +86,3 @@ insertMany vs = do
     fieldNames = commasJoin $ map (fromString . fst) fields
     fields = constrParams $ head (constructors entity)
     dbName = mainTableName id entity
-
-

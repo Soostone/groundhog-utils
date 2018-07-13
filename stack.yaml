@@ -6,4 +6,6 @@ extra-deps:
   - groundhog-0.8.0.1
   - groundhog-postgresql-0.8.0.3
   - groundhog-th-0.8.0.2
-flags: {}
+flags:
+  groundhog-utils:
+    lib-Werror: true

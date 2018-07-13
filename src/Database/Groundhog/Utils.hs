@@ -63,18 +63,18 @@ type Entity' v = Entity (DefaultKey v) v
 -------------------------------------------------------------------------------
 -- | Convenience wrapper aronud groundhog's 'select' function that also
 -- returns keys with each result row.
--- selectEntity :: (PersistBackend m,
---                  Projection constr b,
---                  ProjectionDb constr (PhantomDb m),
---                  ProjectionRestriction constr (RestrictionHolder v c),
---                  HasSelectOptions opts (PhantomDb m) (RestrictionHolder v c),
---                  EntityConstr v c)
---              => constr
---              -- ^ The constructor type for the object being queried
---              -> opts
---              -- ^ Same as the opts argument to groundhog's select funciton
---              -> m [Entity (AutoKey v) b]
---TODO: figure out real type
+selectEntity
+  :: ( PersistEntity v
+     , EntityConstr v c
+     , Projection' p conn (RestrictionHolder v c) a
+     , HasSelectOptions opts conn (RestrictionHolder v c)
+     , PersistBackend m
+     , Conn m ~ conn
+     , Projection p v
+     )
+  => p
+  -> opts
+  -> m [Entity (AutoKey v) v]
 selectEntity constructor cond = do
     res <- project (AutoKeyField, constructor) cond
     return $ map (uncurry Entity) res
