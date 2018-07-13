@@ -34,9 +34,10 @@ module Database.Groundhog.Utils
 
 -------------------------------------------------------------------------------
 import           Control.Lens
+import           Control.Monad.Base
 import           Control.Monad.IO.Class
 import           Control.Monad.Loops          (whileJust_)
-import           Control.Monad.Trans
+import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.Resource
 import qualified Data.Acquire                 as Acquire
 import           Data.Aeson
@@ -72,8 +73,7 @@ type Entity' v = Entity (DefaultKey v) v
 -- | Convenience wrapper aronud groundhog's 'select' function that also
 -- returns keys with each result row.
 selectEntity
-  :: ( PersistEntity v
-     , EntityConstr v c
+  :: ( EntityConstr v c
      , Projection' p conn (RestrictionHolder v c) a
      , HasSelectOptions opts conn (RestrictionHolder v c)
      , PersistBackend m
@@ -97,11 +97,11 @@ selectProducer
      , HasSelectOptions opts conn (RestrictionHolder v c)
      , PersistBackend m
      , Conn m ~ conn
-     --, MonadBase IO m
+     , MonadBase IO m
      , Projection ctor b
      , ProjectionDb ctor conn
      , ProjectionRestriction ctor (RestrictionHolder v c)
-     --, EX.MonadThrow m
+     , MonadThrow m
      )
   => ctor
   -> opts
@@ -115,8 +115,8 @@ selectProducer ctor opts = do
 -------------------------------------------------------------------------------
 rowStreamProducer
     :: ( MonadIO m
-       -- , EX.MonadThrow m
-       -- , MonadBase IO m
+       , MonadThrow m
+       , MonadBase IO m
        )
     => RowStream a
     -> ConduitM i a (ResourceT m) ()

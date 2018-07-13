@@ -37,7 +37,8 @@ library
     , transformers
     , monad-control
     , conduit
-    , mtl
+    , transformers
+    , transformers-base
     , monad-loops
   hs-source-dirs:      src
   default-language:    Haskell2010
