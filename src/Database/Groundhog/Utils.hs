@@ -40,7 +40,7 @@ import           Control.Monad.Loops          (whileJust_)
 import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.Resource
 import qualified Data.Acquire                 as Acquire
-import           Data.Aeson
+import           Data.Aeson hiding (Key(..))
 import           Data.ByteString.Char8        (ByteString)
 import           Data.Conduit
 import           Data.Default
