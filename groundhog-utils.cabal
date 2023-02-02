@@ -30,7 +30,7 @@ library
     , groundhog            >= 0.8
     , groundhog-postgresql >= 0.8
     , groundhog-th         >= 0.8
-    , lens                 >= 3.9  && < 5
+    , lens                 >= 3.9  && < 6
     , safecopy             >= 0.8
     , tagged
     , resourcet >= 1.1.0
