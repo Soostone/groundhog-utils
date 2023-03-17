@@ -79,6 +79,7 @@ selectEntity
      , PersistBackend m
      , Conn m ~ conn
      , Projection p v
+     , a ~ v
      )
   => p
   -> opts
